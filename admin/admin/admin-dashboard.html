@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Paneli - Asker Kokoreç</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="stylesheet" href="admin.css">
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+</head>
+<body>
+    <header class="header">
+        <div class="container header-content">
+            <h1 class="header-title"><i class="fas fa-user-shield"></i> Asker Kokoreç Panel</h1>
+            <div class="header-actions">
+                <button id="logout-button" class="button">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Çıkış Yap</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <nav class="tabs" id="nav-tabs">
+                <button class="tab-button active" data-tab="orders"><i class="fas fa-receipt"></i> Siparişler</button>
+                <button class="tab-button" data-tab="products"><i class="fas fa-hamburger"></i> Ürün Yönetimi</button>
+                <button class="tab-button" data-tab="deleted"><i class="fas fa-trash-alt"></i> Silinen Ürünler</button>
+            </nav>
+
+            <div id="tab-orders" class="tab-content active">
+                <div class="content-header">
+                    <h2 class="content-title">Gelen Siparişler</h2>
+                </div>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Sipariş No</th>
+                                <th>Müşteri</th>
+                                <th>Telefon</th>
+                                <th>Tutar</th>
+                                <th>Durum</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody id="orders-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="tab-products" class="tab-content">
+                <div class="toolbar">
+                    <div class="toolbar-filters">
+                        <div class="search-bar">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="product-search" placeholder="Ürün adı ara...">
+                        </div>
+                        <select id="product-category-filter" class="category-filter">
+                            <option value="all">Tüm Kategoriler</option>
+                        </select>
+                    </div>
+                    <button id="add-product-button" class="button button-add-new">
+                        <i class="fas fa-plus"></i> Yeni Ürün Ekle
+                    </button>
+                </div>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Ürün Adı</th>
+                                <th>Kategori</th>
+                                <th>Fiyat (₺)</th>
+                                <th>Stok Durumu</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody id="product-table-body">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="tab-deleted" class="tab-content">
+                 <div class="content-header">
+                    <h2 class="content-title">Silinmiş Ürünler</h2>
+                </div>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Ürün Adı</th>
+                                <th>Kategori</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody id="deleted-products-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <div id="modal" class="modal-overlay">
+    </div>
+    
+    <div id="notification"></div>
+    <audio id="notification-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-positive-notification-951.mp3" preload="auto"></audio>
+
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    
+    <script src="../kullanici/product.js"></script> 
+    
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script> 
+    
+    <script>
+        // MÜŞTERİ SAYFANIZDAKİ (script.js) İLE BİREBİR AYNI BİLGİLERİ GİRİN
+        const firebaseConfig = {
+          apiKey: "SIZIN_API_KEYINIZ",
+          authDomain: "SIZIN_AUTH_DOMAININIZ",
+          projectId: "SIZIN_PROJE_IDNIZ",
+          storageBucket: "SIZIN_STORAGE_BUCKETINIZ",
+          messagingSenderId: "SIZIN_MESSAGING_SENDER_IDNIZ",
+          appId: "SIZIN_APP_IDNIZ"
+        };
+
+        // Firebase'i başlat
+        firebase.initializeApp(firebaseConfig);
+        
+        // db değişkenini admin.js'in erişebilmesi için global hale getiriyoruz
+        const db = firebase.firestore(); 
+    </script>
+
+    <script src="admin.js"></script>
+</body>
+</html>
+
+<script>
+const products = [
+    { id: 101, name: 'Bütün Kokoreç', price: 460, category: 'Ekmek Arası', image: '', available: true },
+    { id: 102, name: 'Üç Çeyrek Kokoreç', price: 360, category: 'Ekmek Arası', image: '', available: true },
+    { id: 103, name: 'Yarım Kokoreç', price: 230, category: 'Ekmek Arası', image: '', available: true },
+    { id: 104, name: 'Çeyrek Kokoreç', price: 160, category: 'Ekmek Arası', image: '', available: true },
+    { id: 105, name: 'Bütün Köfte', price: 160, category: 'Ekmek Arası', image: '', available: true },
+    { id: 106, name: 'Yarım Köfte', price: 110, category: 'Ekmek Arası', image: '', available: true },
+    { id: 107, name: 'Çeyrek Köfte', price: 70, category: 'Ekmek Arası', image: '', available: true },
+    { id: 108, name: 'Bütün Sucuk', price: 160, category: 'Ekmek Arası', image: '', available: true },
+    { id: 109, name: 'Üç Çeyrek Sucuk', price: 130, category: 'Ekmek Arası', image: '', available: true },
+    { id: 110, name: 'Yarım Sucuk', price: 90, category: 'Ekmek Arası', image: '', available: true },
+    { id: 111, name: 'Çeyrek Sucuk', price: 60, category: 'Ekmek Arası', image: '', available: true },
+    { id: 112, name: 'Bütün Tavuk', price: 160, category: 'Ekmek Arası', image: '', available: true },
+    { id: 113, name: 'Üç Çeyrek Tavuk', price: 115, category: 'Ekmek Arası', image: '', available: true },
+    { id: 114, name: 'Yarım Tavuk', price: 85, category: 'Ekmek Arası', image: '', available: true },
+    { id: 115, name: 'Çeyrek Tavuk', price: 55, category: 'Ekmek Arası', image: '', available: true },
+    { id: 116, name: 'Bütün Uykuluk', price: 470, category: 'Ekmek Arası', image: '', available: true },
+    { id: 117, name: 'Üç Çeyrek Uykuluk', price: 350, category: 'Ekmek Arası', image: '', available: true },
+    { id: 118, name: 'Yarım Uykuluk', price: 230, category: 'Ekmek Arası', image: '', available: true },
+    { id: 119, name: 'Çeyrek Uykuluk', price: 160, category: 'Ekmek Arası', image: '', available: true },
+    { id: 120, name: 'Bütün Ciğer', price: 160, category: 'Ekmek Arası', image: '', available: true },
+    { id: 121, name: 'Üç Çeyrek Ciğer', price: 130, category: 'Ekmek Arası', image: '', available: true },
+    { id: 122, name: 'Yarım Ciğer', price: 90, category: 'Ekmek Arası', image: '', available: true },
+    { id: 123, name: 'Çeyrek Ciğer', price: 60, category: 'Ekmek Arası', image: '', available: true },
+    { id: 124, name: 'Midye (adet)', price: 15, category: 'Ekmek Arası', image: '', available: true },
+    { id: 201, name: 'Halka Tatlısı', price: 25, category: 'Tatlılar', image: '', available: true },
+    { id: 202, name: 'Ekler', price: 40, category: 'Tatlılar', image: '', available: true },
+    { id: 203, name: 'Soğuk Baklava', price: 60, category: 'Tatlılar', image: '', available: true },
+    { id: 204, name: 'Şekerpare', price: 60, category: 'Tatlılar', image: '', available: true },
+    { id: 301, name: 'Ayran', price: 15, category: 'İçecekler', image: '', available: true },
+    { id: 302, name: 'Büyük Ayran', price: 25, category: 'İçecekler', image: '', available: true },
+    { id: 303, name: 'Kutu Kola', price: 35, category: 'İçecekler', image: '', available: true },
+    { id: 304, name: 'Şişe Kola', price: 30, category: 'İçecekler', image: '', available: true },
+    { id: 305, name: 'Kutu Yedigün', price: 30, category: 'İçecekler', image: '', available: true },
+    { id: 306, name: 'Niğde Gazozu', price: 30, category: 'İçecekler', image: '', available: true },
+    { id: 307, name: 'Kutu Fruko', price: 30, category: 'İçecekler', image: '', available: true },
+    { id: 308, name: 'Şalgam', price: 30, category: 'İçecekler', image: '', available: true },
+    { id: 309, name: 'Ice Tea', price: 30, category: 'İçecekler', image: '', available: true },
+    { id: 310, name: 'Meyve Suyu', price: 30, category: 'İçecekler', image: '', available: true },
+    { id: 311, name: 'Soda', price: 20, category: 'İçecekler', image: '', available: true },
+    { id: 312, name: 'Meyveli Soda', price: 25, category: 'İçecekler', image: '', available: true },
+    { id: 313, name: '1 lt. Kola', price: 45, category: 'İçecekler', image: '', available: true },
+    { id: 314, name: '2,5 lt. Kola', price: 70, category: 'İçecekler', image: '', available: true },
+    { id: 315, name: 'Su', price: 10, category: 'İçecekler', image: '', available: true },
+    { id: 316, name: 'Çay', price: 10, category: 'İçecekler', image: '', available: true },
+    { id: 401, name: 'Çiğ Köfte Dürüm', price: 35, category: 'Çiğ Köfte', image: '', available: true },
+    { id: 402, name: 'Çiğ Köfte Porsiyon', price: 55, category: 'Çiğ Köfte', image: '', available: true },
+];
+</script>

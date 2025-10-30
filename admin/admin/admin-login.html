@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Girişi | Asker Kokoreç</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../admin/admin.css">
+</head>
+<body class="login-page">
+
+    <div class="login-container">
+        <div class="login-box">
+            <img src="../images/Asker-Kokorec fotosu.jpeg" alt="Asker Kokoreç Logo" class="login-logo">
+            <h1>Admin Paneli</h1>
+            <p class="login-subtitle">Lütfen giriş yapın</p>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="username">Kullanıcı Adı</label>
+                    <input type="text" id="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Şifre</label>
+                    <input type="password" id="password" required>
+                </div>
+                <p id="error-message" class="error-message"></p>
+                <p id="hint-message" class="hint-message"></p>
+                <button type="submit" class="button button-full-width">Giriş Yap</button>
+            </form>
+            <div class="login-footer">
+                <a href="#" id="forgot-password-link">Şifremi Unuttum</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
+
+    <script>
+        // ÖNEMLİ: Buradaki bilgileri kendi Firebase projenizdeki
+        // 'firebaseConfig' objesi ile değiştirin. 
+        // Bu bilgileri 'kullanici/script.js' dosyanızın sonundan da kopyalayabilirsiniz.
+        const firebaseConfig = {
+            apiKey: "SIZIN_API_KEYINIZ",
+            authDomain: "SIZIN_AUTH_DOMAININIZ",
+            projectId: "SIZIN_PROJE_IDNIZ",
+            storageBucket: "SIZIN_STORAGE_BUCKETINIZ",
+            messagingSenderId: "SIZIN_MESSAGING_SENDER_IDNIZ",
+            appId: "SIZIN_APP_IDNIZ"
+        };
+
+        // Firebase'i başlat (eğer daha önce başlatılmadıysa)
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        
+        // admin.js dosyasının kullanabilmesi için auth ve db'yi global olarak tanımlıyoruz
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+    </script>
+
+    <script src="../admin/admin.js"></script>
+</body>
+</html>

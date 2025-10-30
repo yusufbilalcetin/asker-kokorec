@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Asker Kokoreç | Online Sipariş</title>
+    <meta name="description" content="Sakarya'nın en lezzetli kokoreçi Asker Kokoreç'ten online sipariş verin. 25 yıldır değişmeyen tat, gece 03:00'e kadar hizmetinizde.">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/css/intlTelInput.css">
+    
+    <link rel="stylesheet" href="../kullanici/style.css" />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/js/intlTelInput.min.js"></script>
+
+    <script src="../kullanici/script.js" defer></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>    
+
+
+</head>
+<body class="dark-mode">
+
+    <header class="header">
+        <div class="container header__container">
+            <a href="index.html" class="header__logo" aria-label="Ana Sayfa">
+                <img src="../images/Asker-Kokorec fotosu.jpeg" alt="Asker Kokoreç Logosu" loading="lazy" />
+                <h1>Asker Kokoreç</h1>
+            </a>
+            <nav class="nav" id="main-nav">
+                <a href="#ekmek-arasi" class="nav__link">Ekmek Arası</a>
+                <a href="#tatlilar" class="nav__link">Tatlılar</a>
+                <a href="#icecekler" class="nav__link">İçecekler</a>
+                <a href="#cigkofte" class="nav__link">Çiğ Köfte</a>
+                <a href="#hakkimizda" class="nav__link">Hakkımızda</a>
+            </nav>
+            <div class="header__meta">
+                <div class="header__status">
+                    <span id="status-indicator" class="indicator"></span>
+                    <span id="status-text"></span>
+                </div>
+                <div class="header__controls">
+                    <label class="theme-switch" for="theme-toggle-checkbox" aria-label="Temayı Değiştir">
+                        <input type="checkbox" id="theme-toggle-checkbox" />
+                        <div class="slider"></div>
+                    </label>
+                    <button type="button" class="control-btn" data-action="openCart" aria-label="Sepeti Görüntüle">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span id="cart-count" class="cart-count">0</span>
+                    </button>
+                    <button type="button" class="control-btn mobile-nav-toggle" data-action="toggleMobileNav" aria-label="Menüyü Aç">
+                        <i id="mobile-nav-icon" class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="menu-showcase">
+            <div class="container">
+                <div class="menu__header">
+                    <h2 class="section-title">Menümüzü Keşfedin</h2>
+                    <div class="search-bar">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="search-input" placeholder="Ne aramıştınız?">
+                    </div>
+                </div>
+                
+                <div id="menu-container">
+                    <div class="skeleton-loader">
+                        <div class="skeleton-card"></div><div class="skeleton-card"></div>
+                        <div class="skeleton-card"></div><div class="skeleton-card"></div>
+                    </div>
+                </div>
+                 <div id="search-no-results" class="no-results-message" style="display: none;">
+                    Aradığınız ürün bulunamadı.
+                </div>
+            </div>
+        </section>
+
+        <section id="hakkimizda" class="content-section" style="text-align: center;">
+            <div class="container">
+                <h2 class="section-title">Yılların Değişmeyen Tadı</h2>
+                <p>Asker Kokoreç olarak tam 25 yıldır Sakarya halkına hizmet vermekten gurur duyuyoruz. Lezzetimizin sırrı, her zaman en taze ve en kaliteli malzemeleri kullanmamızda ve işimize olan tutkumuzda saklıdır. Hijyen ve müşteri memnuniyetini her zaman ön planda tutarak, bu lezzet nöbetini gece 03:00'e kadar sürdürüyoruz. Bizi tercih ettiğiniz için teşekkür ederiz.</p>
+            </div>
+        </section>
+
+        <section id="iletisim" class="content-section" style="text-align: center;">
+            <div class="container">
+                <h2 class="section-title">İletişim</h2>
+                <div class="contact-info">
+                    <p><i class="fas fa-map-marker-alt"></i> <a href="https://www.google.com/maps/place/ASKER+KOKORE%C3%87/@40.7716925,30.3775205,17z/data=!3m1!4b1!4m6!3m5!1s0x14ccb2db110ed21d:0x30e72d1c3225928!8m2!3d40.7716925!4d30.3800954!16s%2Fg%2F11c0qgrfqc?entry=ttu&g_ep=EgoyMDI1MTAxMi4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener noreferrer">Serdivan, Sakarya (Harita için tıklayın)</a></p>
+                    <p><i class="fas fa-phone"></i> <a href="tel:05437910461">0543 791 04 61</a></p>
+                    <div class="social-links" style="justify-content: center;">
+                        
+                        <a href="https://www.instagram.com/askerkokorec54/" target="_blank" aria-label="Instagram">
+                            <i class="fab fa-instagram" style="font-size: 40px; margin: 0 10px;"></i>
+                        </a>
+                        <a href="https://www.facebook.com/asker.kokorec54?locale=tr_TR" target="_blank" aria-label="Facebook">
+                            <i class="fab fa-facebook" style="font-size: 40px; margin: 0 10px;"></i>
+                        </a>
+                        
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer class="footer" style="text-align: center;">
+         <div class="container">
+               <p>© 2025 Asker Kokoreç. Tüm hakları saklıdır.</p>
+         </div>
+    </footer>
+    
+    <aside id="cart-panel" class="cart-panel"></aside>
+    <div id="overlay" class="overlay" data-action="closeAllPanels"></div>
+    <div id="checkout-modal" class="modal-container"></div>
+    <div id="confirmation-modal" class="modal-container"></div>
+
+    
+</body>
+</html>
